@@ -1,0 +1,16 @@
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        function hlPHP() {
+            setTimeout(() => {
+                document.querySelectorAll('.prismjs .language-php:not(.hljs)').forEach((el) => {
+                    hljs.highlightElement(el, {language: 'php'});
+                });
+            }, 300)
+        }
+        const bodyObserver = new MutationObserver(hlPHP)
+        bodyObserver.observe(document.body, {attributes: true});
+    });
+</script>

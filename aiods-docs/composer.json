@@ -1,0 +1,27 @@
+{
+    "name": "aiods/docs",
+    "description": "Documentation of Aiods",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aiods\\Docs\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/DarkLink363/aiods-framework.git"
+        }
+    ],
+    "authors": [
+        {
+            "name": "DarkLink363",
+            "email": "ariel363@o2.pl"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require-dev": {
+        "aiods/framework": "dev-main"
+    }
+}
