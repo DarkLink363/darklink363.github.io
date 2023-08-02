@@ -1,9 +1,6 @@
 import { Meta } from '@storybook/addon-docs';
 import { Markdown } from '@storybook/blocks';
-
-[//]: # (import {changelog_3_0_0} from "./Changelog";)
-
-[//]: # (import * as changelog from './Changelog';)
+import * as changelog from './Changelog';
 
 <Meta title="Changelog" />
 
@@ -51,9 +48,8 @@ import { Markdown } from '@storybook/blocks';
 # Changelog
 <br/><br/>
 
-[//]: # ({changelog_3_0_0})
 
-[//]: # ({ Object.entries&#40;changelog&#41;.sort&#40;&#40;a,b&#41; => b[0].localeCompare&#40;a[0], 'pl', {numeric: true}&#41;&#41;.map&#40;&#40;a&#41; => <Markdown key={a[0]}>{ a[1] + '<br><br>' }</Markdown>&#41; })
+{ Object.entries(changelog).sort((a,b) => b[0].localeCompare(a[0], 'pl', {numeric: true})).map((a) => (<Markdown>{a[1] + '<br/><br/>'}</Markdown>)) }
 
 
 
