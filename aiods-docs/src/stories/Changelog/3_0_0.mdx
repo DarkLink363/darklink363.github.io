@@ -1,0 +1,45 @@
+## **3.0.0 (Sierpień 1, 2022)**
+
+<br/>
+
+### **Features**
+
+* **Vue 3:** Vue 3 witamy na pokładzie 😄
+* **Inertia** Wraz z vue 3 mostek pomiędzy vue 3, a Laravel'em (Aiods'em) pełni teraz Inertia
+* **Services:** Dodanie nowego typu klasy `Service`, która eliminuje problem zduplikowanego kodu pomiędzy zwykłym kontrolerem, a kontrolerem do API
+* **Fast paginate:** Nowa oraz szybsza metoda paginacji `->fastPaginate()`
+* **Bramki:** Od teraz bramki automatycznie ładowane są do Laravel'a, dzięki czemu można korzystać z funkcji pomocniczych Laravel'a takich jak np. `auth()->user()->can()`
+* **Facade Menu:** Nowy facade `Menu`
+* **Facade Modules:** Nowy facade `Modules`
+* **Facade Translations:** Nowy facade `Translations`
+* **Cast:** Nowy cast `FloatedIntegerCast` pozwala na pokazywanie na froncie zmiennej typu float, natomiast w bazie danych informacja jest przetrzymywana jako integer (bigint)
+
+#### **Mniej ważne**
+
+* **not_null($value):** Nowy helper `not_null` - sprawdza czy dana zmienna nie jest null
+* **vendor_aiods_path():** Nowy helper `vendor_aiods_path`
+* **bootstrap_cache_path():** Nowy helper `bootstrap_cache_path`
+* **vendor_mix():** Nowy helper `vendor_mix`
+* **user():** Nowy helper `user`, zwraca klasę (string) modelu `User`
+* **migracja users:** Możliwość opublikowania do projektu tabeli users poprzez komendę `vendor:publish --tag=migration:user`
+
+### **Changes**
+
+* **Webpack:** Oddzielono oraz zmieniono całkowicie budowanie JS w tym CSS
+* **Webpack:** Vendor js Aiods nie jest już publikowany do resources/vendor/...
+* **memory_cache():** Usprawniony helper `memory_cache`
+* **routy admina:** Przeniesiono routy admina do pliku `routes/admin.php`
+* **routy blade/web:** Przeniesiono routy blade/web z pliku `routes/blade.php` do pliku `routes/web.php`
+* **routy api:** Przeniesiono routy api z pliku `routes/apiV2.php` do pliku `routes/api.php`
+* **model User:** Przeniesiono model `User` z vendora do plików do edycji
+* **Bramki:** Zmieniono nazwę modelu z Gate na `Permission`
+* **Tokeny API:** Zmieniono obsługę tokenów użytkowników z customowej na `sanctum`, przyczym tokeny aplikacji pozostają bez zmian i są obsługiwane przez Aiods'a
+
+
+### **Bug Fixes**
+
+
+### **Deprecated**
+
+* **crud helper:** usunięto funkcję pomocniczą `crud()`, zamiast tego należy korzystać z funkcji Laravel'owych `Route::resource()` oraz `Route::apiResource()`
+* **komenda aiods:module:build** Usuniętą komendę `aiods:module:build`

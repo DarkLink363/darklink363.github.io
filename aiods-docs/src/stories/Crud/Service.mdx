@@ -1,0 +1,258 @@
+import { Meta } from '@storybook/addon-docs';
+
+[//]: # (import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';)
+
+[//]: # (export const Component = &#40;&#41; => {)
+
+[//]: # (  return <SyntaxHighlighter/>;)
+
+[//]: # (};)
+
+<Meta title="Crud/Service" />
+
+# Crud - Service
+
+Service - główny element łączący np. kontroler z modelem,
+odpowiada za akcje wykonywane na modelu.
+
+#### [# Przykładowy Service użytkowników](#-przyk%C5%82adowy-service-u%C5%BCytkownik%C3%B3w)
+##### &emsp;[# Definiowanie modelu](#-definiowane-modelu)
+
+<br/><br/>
+
+## # Przykładowy najprostrzy Service użytkowników
+
+Zawiera on wszystkie podstawowe funckje, takie jak:
+* **index** - zwraca wszystkie rekordy
+* **show** - zwraca jeden rekord
+* **store** - dodaje rekord do bazy danych
+* **update** - aktualizuje rekord w bazie danych
+* **destroy** - pobiera, a następnie usuwa rekord z bazy danych
+* **destroyDirect** - usuwa rekord z bazy danych
+
+```php
+<?php
+
+namespace App\Services;
+
+use Aiods\Support\Crud\Service;
+use App\Models\User;
+
+class UserService extends Service
+{
+    protected string $model = User::class;
+}
+```
+
+## # Definiowane modelu
+
+Każdy Service **wymaga** podania klasy modelu do którego ma się odwoływać
+
+```php
+  protected string $model = User::class;
+```
+
+Jeżeli potrzebujemy pobierać model na podstawie jakiś zmiennych lub funkcji, trzeba nadpisać funkcję `getModel` i zwracać z niej klasę
+
+```php
+/**
+ * @return string|Model
+ */
+public function getModel(): string|Model
+{
+    return User::class;
+}
+```
+
+## # Sortowanie
+<br/>
+
+### # Sortowanie domyślne
+
+sortowanie domyślne ustawiamy poprzez ustawienie zmiennej `$sortBy` w formie:
+* **pierwszy element tablicy:** kolumna po której wyniki mają być sortowane,
+* **drugi element tablicy:** kierunek sortowania `asc` lub `desc`
+
+```php
+protected ?array $sortBy = [
+    'created_at',
+    'desc'
+];
+```
+
+### # Sortowanie z zapytania
+
+## # Wyszukiwanie
+<br/>
+
+### # Wyszukiwanie - definiowanie kolumn
+
+W celu umożliwienia wyszukiwania po danych kolumnach należy je zdefiniować, w tym celu do Service dodajemy zmienną `$searchIn`
+
+```php
+protected array $searchIn = [
+    'first_name',
+    'last_name',
+    'email',
+    'phone',
+];
+```
+
+### # Wyszukiwanie po kolumnach łaczonych
+
+Kolumny łączone to na przykład, jeżeli w bazie posiadamy osobne kolumny do imienia (`first_name`) oraz do nazwiska (`last_name`),
+natomiast chcemy mieć możliwość szukania osobno jak i razem w obydwóch kolumnach,
+w tym celu musimy połączyć odpowiedzi z dwóch kolumn znakiem `+` i spacją pomiędzy (`' '`).
+
+Możemy tworzyć kilka kombinacji tych samych pól jak np. `"first_name+' '+last_name"` oraz `"last_name+' '+first_name"`
+
+```php
+protected array $searchIn = [
+    'first_name',
+    'last_name',
+    "first_name+' '+last_name",
+    "last_name+' '+first_name"
+];
+```
+
+Istnieje również możliwość nadpisania funkcji `getSearchIn` w celu dodania zapytań *RAW*, np.
+
+*przykład używania CONCAT - to samo co `+`*
+
+```php
+protected function getSearchIn(): array
+{
+    return [
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        DB::raw("CONCAT(first_name,' ',last_name)")
+    ];
+}
+```
+
+## # Relacje
+<br/>
+
+### # Relacje proste
+
+Dodawanie relacji do poszczególnych zapytań odbywa się poprzed dodanie i uzupełnienie w zależności od potrzeb zmiennej `$relations` jak na przykładzie poniżej.
+
+```php
+protected array $relations = [
+    'index' => ['role'],
+    'show' => ['role'],
+    'store' => [],
+    'update' => [],
+    'destroy' => [],
+];
+```
+
+Oczywiście nie są wymagane wszystkie pozycje w tablicy, powyższy przykład można zapisać krócej:
+
+```php
+protected array $relations = [
+    'index' => ['role'],
+    'show' => ['role'],
+];
+```
+
+
+
+### # Relacje złożone
+
+```php
+/**
+ * @return array|array[]
+ */
+public function getRelations(): array
+{
+    return [
+        'index' => [
+            'tasks',
+        ],
+        'show' => [
+            'tasks' => fn ($q) => $q->orderBy('name')
+        ],
+    ];
+}
+```
+
+## # Rozszerzanie Service
+<br/>
+
+### # Tworzenie funkcji na podstawie CRUDowych
+
+```php
+/**
+ * @throws Throwable
+ */
+public function userScoped($userId = null): \Illuminate\Database\Eloquent\Collection|array
+{
+    return parent::index(new Callback(fn ($q) => $q->of($userId ?? (auth()->check() ? auth()->user()->id : null) )));
+}
+```
+
+Odpowiednia klasa `Callback`
+
+```php
+use Aiods\Support\Callback;
+```
+
+
+### # Tworzenie funkcji
+
+```php
+public static function storeScoped(LeadStoreApiRequest $request)
+{
+    $defaultStatus = Status::query()->where('is_default', 1)->first();
+    return Task::query()->updateOrCreate([
+        'id' => $request->input('id'),
+        'user_id' => auth()->user()->id,
+        'status' => optional($defaultStatus)->status ?? 'Nowy',
+    ], $request->validated());
+}
+```
+
+## # Funkcje pomocnicze
+<br/>
+
+```php
+protected function indexBuilder(Builder $builder): Builder { return $builder; }
+```
+```php
+protected function showBuilder(Builder $builder): Builder { return $builder; }
+```
+```php
+protected function storeBuilder(Builder $builder): Builder { return $builder; }
+```
+```php
+protected function updateBuilder(Builder $builder): Builder { return $builder; }
+```
+```php
+protected function destroyBuilder(Builder $builder): Builder { return $builder; }
+```
+
+```php
+protected function getSelectOf($name)
+```
+
+```php
+public function query(): Builder
+```
+
+```php
+public function getRelationsOf($type): array
+```
+
+```php
+public function setModel(string $model): void
+```
+
+```php
+public function setSortBy(?array $sortBy): void
+```
+
+
+

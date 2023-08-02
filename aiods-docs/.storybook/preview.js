@@ -8,6 +8,17 @@ const preview = {
         date: /Date$/,
       },
     },
+    options: {
+      storySort: {
+        order: [
+          'Wprowadzenie',
+          'Changelog',
+          'Komponenty',
+          'Crud',
+          ['Wprowadzenie', 'Service', 'Controller', 'ApiController'],
+        ],
+      },
+    },
   },
 };
 
