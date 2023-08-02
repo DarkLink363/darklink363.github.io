@@ -8,7 +8,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "storybook-docs": "storybook dev --docs",
-    "build-storybook-docs": "storybook build --docs -o ../aiods-docs"
+    "build-storybook-docs": "storybook build --docs -o ../aiods-docs && touch ../aiods-docs/.nojekyll"
   },
   "keywords": [],
   "author": "",
